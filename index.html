@@ -1,5 +1,19 @@
 <!DOCTYPE html>
-<html><meta charset=utf-8>
-<iframe src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/web/viewer.html?file={{mx_download_url}}"
-        style="width:100vw;height:100vh;border:none"></iframe>
-</html>
+<html><meta charset=utf-8><script>
+const url = decodeURIComponent(location.search.match(/file=([^&]+)/)?.[1] || '');
+if (!url) { document.body.innerHTML = '<h1>Ошибка: нет ссылки</h1>'; }
+const ext = url.split('.').pop().toLowerCase();
+let viewer = '';
+if (ext === 'pdf') {
+  viewer = `https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/web/viewer.html?file=${encodeURIComponent(url)}`;
+} else if (['doc','docx','xls','xlsx','csv','ppt','pptx'].includes(ext)) {
+  viewer = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+} else if (['odt','ods','odp'].includes(ext)) {
+  viewer = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+} else {
+  document.body.innerHTML = '<h1>Формат не поддерживается</h1>';
+}
+if (viewer) {
+  document.body.innerHTML = `<iframe src="${viewer}" style="width:100vw;height:100vh;border:none"></iframe>`;
+}
+</script></html>
